@@ -34,3 +34,17 @@ class OrderModel:
             "outside_rth": str(self.order.outside_rth),
             "remark": self.order.remark
         }
+    
+class ExecutionModel:
+    def __init__(self, execution):
+        self.execution = execution
+
+    def to_dict(self):
+        return {
+            "trade_id": self.execution.trade_id,
+            "order_id": self.execution.order_id,
+            "symbol": self.execution.symbol,
+            "trade_done_at": self.execution.trade_done_at.isoformat() if isinstance(self.execution.trade_done_at, (datetime, date)) else self.execution.trade_done_at,
+            "quantity": self.execution.quantity,
+            "price": float(self.execution.price) if isinstance(self.execution.price, Decimal) else self.execution.price,
+        }
