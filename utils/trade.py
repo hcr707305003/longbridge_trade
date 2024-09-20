@@ -2,15 +2,55 @@ from decimal import Decimal
 from longport.openapi import TradeContext, OrderSide, OrderType, TimeInForceType
 from utils.model import (
     OrderModel,
-    ExecutionModel
+    ExecutionModel,
+    AccountBalanceModel,
+    CashFlowModel,
+    FundPositionsResponseModel,
+    MarginRatioModel,
+    StockPositionsResponseModel
 )
 
 class Trade:
     def __init__(self, config):
         self.config = config
         self.trade_ctx = TradeContext(self.config)
+
+    def account_balance(self, currency="HKD"):
+        """
+        账户余额
+        """
+        return [AccountBalanceModel(balance).to_dict() for balance in self.trade_ctx.account_balance(
+            currency=currency,
+        )]
+
+    def cash_flow(self, start_time, end_time):
+        """
+        资金流水
+        """
+        return [CashFlowModel(cash).to_dict() for cash in self.trade_ctx.cash_flow(
+            start_at=start_time,
+            end_at=end_time
+        )]
+
+    def fund_positions(self):
+        """
+        获取基金持仓
+        """
+        return FundPositionsResponseModel(self.trade_ctx.fund_positions()).to_dict()
     
-    def submit(self):
+    def margin_ratio(self, symbol = "700.HK"):
+        """
+        获取保证金比例
+        """
+        return MarginRatioModel(self.trade_ctx.margin_ratio(symbol)).to_dict()
+
+    def stock_positions(self):
+        """
+        股票持仓
+        """
+        return StockPositionsResponseModel(self.trade_ctx.stock_positions()).to_dict()
+
+    def submit_order(self):
         """
         提交订单
         """
@@ -24,6 +64,19 @@ class Trade:
             remark="Hello from Python SDK",
         )
         print(resp)
+
+    
+    def modify_order(self, order_id, quantity, price):
+        """
+        修改订单
+        """
+        resp = self.trade_ctx.replace_order(
+            order_id=order_id,
+            quantity=quantity,
+            price=price
+        )
+        print(resp)
+
     
     def cancel(self, order_id):
         """
@@ -37,6 +90,12 @@ class Trade:
         """
         return [OrderModel(order).to_dict() for order in self.trade_ctx.today_orders()]
     
+    def order_detail(self, order_id):
+        """
+        获取订单详情
+        """
+        return OrderModel(self.trade_ctx.order_detail(order_id)).to_dict()
+
     def today_execution_list(self):
         """
         获取今日操作记录
