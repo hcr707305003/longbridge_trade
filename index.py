@@ -1,5 +1,5 @@
 import os
-import config
+import utils.config as config
 from flask import Flask
 from dotenv import load_dotenv
 from longport.openapi import Config

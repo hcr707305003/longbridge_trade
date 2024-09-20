@@ -1,6 +1,6 @@
 from decimal import Decimal
 from longport.openapi import TradeContext, OrderSide, OrderType, TimeInForceType
-from model import (
+from utils.model import (
     OrderModel
 )
 

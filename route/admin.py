@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template
-import plugin.tools as tools
+import utils.tools as tools
 
 admin_route = Blueprint('admin', __name__)
 
