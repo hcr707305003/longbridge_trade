@@ -1,3 +1,4 @@
 longport==1.0.35
 Flask==3.0.3
 python-dotenv==1.0.0
+APScheduler==3.10.1

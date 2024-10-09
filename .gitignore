@@ -1,3 +1,4 @@
 develop.env
 product.env
 __pycache__/
+longbridge.db

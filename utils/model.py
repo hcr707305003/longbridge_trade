@@ -262,3 +262,184 @@ class StockPositionModel:
             'market': str(self.stock_position.market),
             'init_quantity': self.stock_position.init_quantity
         }
+
+class SecurityModel:
+    def __init__(self, security):
+        self.security = security
+    def to_dict(self):
+        return {
+            'symbol': self.security.symbol,
+            'name_cn': self.security.name_cn,
+            'name_en': self.security.name_en,
+            'name_hk': self.security.name_hk
+        }
+
+class SecurityStaticInfoModel:
+    def __init__(self, security_static_info):
+        self.security_static_info = security_static_info
+    def to_dict(self):
+        return {
+            'symbol': self.security_static_info.symbol,
+            'name_cn': self.security_static_info.name_cn,
+            'name_en': self.security_static_info.name_en,
+            'name_hk': self.security_static_info.name_hk,
+            'exchange': self.security_static_info.exchange,
+            'currency': self.security_static_info.currency,
+            'lot_size': self.security_static_info.lot_size,
+            'total_shares': self.security_static_info.total_shares,
+            'circulating_shares': self.security_static_info.circulating_shares,
+            'hk_shares': self.security_static_info.hk_shares,
+            'eps': float(self.security_static_info.eps) if isinstance(self.security_static_info.eps, Decimal) else self.security_static_info.eps,
+            'eps_ttm': float(self.security_static_info.eps_ttm) if isinstance(self.security_static_info.eps_ttm, Decimal) else self.security_static_info.eps_ttm,
+            'bps': float(self.security_static_info.bps) if isinstance(self.security_static_info.bps, Decimal) else self.security_static_info.bps,
+            'dividend_yield': float(self.security_static_info.dividend_yield) if isinstance(self.security_static_info.dividend_yield, Decimal) else self.security_static_info.dividend_yield,
+            'stock_derivatives': [str(stock_derivatives) for stock_derivatives in self.security_static_info.stock_derivatives],
+            'board': str(self.security_static_info.board)
+        }
+    
+class SecurityQuoteModel:
+    def __init__(self, security_quote):
+        self.security_quote = security_quote
+    def to_dict(self):
+        return {
+            'symbol': self.security_quote.symbol,
+            'last_done': float(self.security_quote.last_done) if isinstance(self.security_quote.last_done, Decimal) else self.security_quote.last_done,
+            'prev_close': float(self.security_quote.prev_close) if isinstance(self.security_quote.prev_close, Decimal) else self.security_quote.prev_close,
+            'open': float(self.security_quote.open) if isinstance(self.security_quote.open, Decimal) else self.security_quote.open,
+            'high': float(self.security_quote.high) if isinstance(self.security_quote.high, Decimal) else self.security_quote.high,
+            'low': float(self.security_quote.low) if isinstance(self.security_quote.low, Decimal) else self.security_quote.low,
+            "timestamp": self.security_quote.timestamp.isoformat() if isinstance(self.security_quote.timestamp, (datetime, date)) else self.security_quote.timestamp,
+            'volume': self.security_quote.volume,
+            'turnover': float(self.security_quote.turnover) if isinstance(self.security_quote.turnover, Decimal) else self.security_quote.turnover,
+            'trade_status': str(self.security_quote.trade_status),
+            'pre_market_quote': PrePostQuoteModel(self.security_quote.pre_market_quote).to_dict(),
+            'post_market_quote': PrePostQuoteModel(self.security_quote.post_market_quote).to_dict(),
+            'overnight_quote': self.security_quote.overnight_quote
+        }
+
+class PrePostQuoteModel:
+    def __init__(self, pre_post_quote):
+        self.pre_post_quote = pre_post_quote
+    def to_dict(self):
+        return {
+            'last_done': float(self.pre_post_quote.last_done) if isinstance(self.pre_post_quote.last_done, Decimal) else self.pre_post_quote.last_done,
+            "timestamp": self.pre_post_quote.timestamp.isoformat() if isinstance(self.pre_post_quote.timestamp, (datetime, date)) else self.pre_post_quote.timestamp,
+            'volume': self.pre_post_quote.volume,
+            'turnover': float(self.pre_post_quote.turnover) if isinstance(self.pre_post_quote.turnover, Decimal) else self.pre_post_quote.turnover,
+            'high': float(self.pre_post_quote.high) if isinstance(self.pre_post_quote.high, Decimal) else self.pre_post_quote.high,
+            'low': float(self.pre_post_quote.low) if isinstance(self.pre_post_quote.low, Decimal) else self.pre_post_quote.low,
+            'prev_close': float(self.pre_post_quote.prev_close) if isinstance(self.pre_post_quote.prev_close, Decimal) else self.pre_post_quote.prev_close
+        }
+    
+class TradeModel:
+    def __init__(self, trade):
+        self.trade = trade
+    def to_dict(self):
+        return {
+            'price': float(self.trade.price) if isinstance(self.trade.price, Decimal) else self.trade.price,
+            'volume': self.trade.volume,
+            'timestamp': self.trade.timestamp.isoformat() if isinstance(self.trade.timestamp, (datetime, date)) else self.trade.timestamp,
+            'trade_type': str(self.trade.trade_type),
+            'direction': str(self.trade.direction),
+            'trade_session': str(self.trade.trade_session),
+        }
+    
+class CandlestickModel:
+    def __init__(self, candlestick):
+        self.candlestick = candlestick
+    def to_dict(self):
+        return {
+            'close': float(self.candlestick.close) if isinstance(self.candlestick.close, Decimal) else self.candlestick.close,
+            'open': float(self.candlestick.open) if isinstance(self.candlestick.open, Decimal) else self.candlestick.open,
+            'low': float(self.candlestick.low) if isinstance(self.candlestick.low, Decimal) else self.candlestick.low,
+            'high': float(self.candlestick.high) if isinstance(self.candlestick.high, Decimal) else self.candlestick.high,
+            'volume': self.candlestick.volume,
+            'turnover': float(self.candlestick.turnover) if isinstance(self.candlestick.turnover, Decimal) else self.candlestick.turnover,
+            "timestamp": self.candlestick.timestamp.isoformat() if isinstance(self.candlestick.timestamp, (datetime, date)) else self.candlestick.timestamp
+        }
+
+class CapitalFlowLineModel:
+    def __init__(self, capital_flow_line):
+        self.capital_flow_line = capital_flow_line
+    def to_dict(self):
+        return {
+            'timestamp': self.capital_flow_line.timestamp.isoformat() if isinstance(self.capital_flow_line.timestamp, (datetime, date)) else self.capital_flow_line.timestamp,
+            'inflow': float(self.capital_flow_line.inflow) if isinstance(self.capital_flow_line.inflow, Decimal) else self.capital_flow_line.inflow
+        }
+    
+class CapitalDistributionResponseModel:
+    def __init__(self, capital_distribution):
+        self.capital_distribution = capital_distribution
+    def to_dict(self):
+        return {
+            'timestamp': self.capital_distribution.timestamp.isoformat() if isinstance(self.capital_distribution.timestamp, (datetime, date)) else self.capital_distribution.timestamp,
+            'capital_in': CapitalDistributionModel(self.capital_distribution.capital_in).to_dict()
+        }
+    
+class CapitalDistributionModel:
+    def __init__(self, capital_distribution):
+        self.capital_distribution = capital_distribution
+    def to_dict(self):
+        return {
+            'large': float(self.capital_distribution.large) if isinstance(self.capital_distribution.large, Decimal) else self.capital_distribution.large,
+            'medium': float(self.capital_distribution.medium) if isinstance(self.capital_distribution.medium, Decimal) else self.capital_distribution.medium,
+            'small': float(self.capital_distribution.small) if isinstance(self.capital_distribution.small, Decimal) else self.capital_distribution.small,
+        }
+    
+class SecurityCalcIndexModel:
+    def __init__(self, security_calc_index):
+        self.security_calc_index = security_calc_index
+    def to_dict(self):
+        return {
+            'symbol': self.security_calc_index.symbol,
+            'last_done': float(self.security_calc_index.last_done) if isinstance(self.security_calc_index.last_done, Decimal) else self.security_calc_index.last_done,
+            'change_value': float(self.security_calc_index.change_value) if isinstance(self.security_calc_index.change_value, Decimal) else self.security_calc_index.change_value,
+            'change_rate': float(self.security_calc_index.change_rate) if isinstance(self.security_calc_index.change_rate, Decimal) else self.security_calc_index.change_rate,
+            'volume': float(self.security_calc_index.volume) if isinstance(self.security_calc_index.volume, Decimal) else self.security_calc_index.volume,
+            'turnover': float(self.security_calc_index.turnover) if isinstance(self.security_calc_index.turnover, Decimal) else self.security_calc_index.turnover,
+            'ytd_change_rate': float(self.security_calc_index.ytd_change_rate) if isinstance(self.security_calc_index.ytd_change_rate, Decimal) else self.security_calc_index.ytd_change_rate,
+            'turnover_rate': float(self.security_calc_index.turnover_rate) if isinstance(self.security_calc_index.turnover_rate, Decimal) else self.security_calc_index.turnover_rate,
+            'total_market_value': float(self.security_calc_index.total_market_value) if isinstance(self.security_calc_index.total_market_value, Decimal) else self.security_calc_index.total_market_value,
+            'capital_flow': float(self.security_calc_index.capital_flow) if isinstance(self.security_calc_index.capital_flow, Decimal) else self.security_calc_index.capital_flow,
+            'amplitude': float(self.security_calc_index.amplitude) if isinstance(self.security_calc_index.amplitude, Decimal) else self.security_calc_index.amplitude,
+            'volume_ratio': float(self.security_calc_index.volume_ratio) if isinstance(self.security_calc_index.volume_ratio, Decimal) else self.security_calc_index.volume_ratio,
+            'pe_ttm_ratio': float(self.security_calc_index.pe_ttm_ratio) if isinstance(self.security_calc_index.pe_ttm_ratio, Decimal) else self.security_calc_index.pe_ttm_ratio,
+            'pb_ratio': float(self.security_calc_index.pb_ratio) if isinstance(self.security_calc_index.pb_ratio, Decimal) else self.security_calc_index.pb_ratio,
+            'dividend_ratio_ttm': float(self.security_calc_index.dividend_ratio_ttm) if isinstance(self.security_calc_index.dividend_ratio_ttm, Decimal) else self.security_calc_index.dividend_ratio_ttm,
+            'five_day_change_rate': float(self.security_calc_index.five_day_change_rate) if isinstance(self.security_calc_index.five_day_change_rate, Decimal) else self.security_calc_index.five_day_change_rate,
+            'ten_day_change_rate': float(self.security_calc_index.ten_day_change_rate) if isinstance(self.security_calc_index.ten_day_change_rate, Decimal) else self.security_calc_index.ten_day_change_rate,
+            'half_year_change_rate': float(self.security_calc_index.half_year_change_rate) if isinstance(self.security_calc_index.half_year_change_rate, Decimal) else self.security_calc_index.half_year_change_rate,
+            'five_minutes_change_rate': float(self.security_calc_index.five_minutes_change_rate) if isinstance(self.security_calc_index.five_minutes_change_rate, Decimal) else self.security_calc_index.five_minutes_change_rate,
+            'expiry_date': float(self.security_calc_index.expiry_date) if isinstance(self.security_calc_index.expiry_date, Decimal) else self.security_calc_index.expiry_date,
+            'strike_price': float(self.security_calc_index.strike_price) if isinstance(self.security_calc_index.strike_price, Decimal) else self.security_calc_index.strike_price,
+            'upper_strike_price': float(self.security_calc_index.upper_strike_price) if isinstance(self.security_calc_index.upper_strike_price, Decimal) else self.security_calc_index.upper_strike_price,
+            'lower_strike_price': float(self.security_calc_index.lower_strike_price) if isinstance(self.security_calc_index.lower_strike_price, Decimal) else self.security_calc_index.lower_strike_price,
+            'outstanding_qty': float(self.security_calc_index.outstanding_qty) if isinstance(self.security_calc_index.outstanding_qty, Decimal) else self.security_calc_index.outstanding_qty,
+            'outstanding_ratio': float(self.security_calc_index.outstanding_ratio) if isinstance(self.security_calc_index.outstanding_ratio, Decimal) else self.security_calc_index.outstanding_ratio,
+            'premium': float(self.security_calc_index.premium) if isinstance(self.security_calc_index.premium, Decimal) else self.security_calc_index.premium,
+            'itm_otm': float(self.security_calc_index.itm_otm) if isinstance(self.security_calc_index.itm_otm, Decimal) else self.security_calc_index.itm_otm,
+            'implied_volatility': float(self.security_calc_index.implied_volatility) if isinstance(self.security_calc_index.implied_volatility, Decimal) else self.security_calc_index.implied_volatility,
+            'warrant_delta': float(self.security_calc_index.warrant_delta) if isinstance(self.security_calc_index.warrant_delta, Decimal) else self.security_calc_index.warrant_delta,
+            'call_price': float(self.security_calc_index.call_price) if isinstance(self.security_calc_index.call_price, Decimal) else self.security_calc_index.call_price,
+            'to_call_price': float(self.security_calc_index.to_call_price) if isinstance(self.security_calc_index.to_call_price, Decimal) else self.security_calc_index.to_call_price,
+            'effective_leverage': float(self.security_calc_index.effective_leverage) if isinstance(self.security_calc_index.effective_leverage, Decimal) else self.security_calc_index.effective_leverage,
+            'leverage_ratio': float(self.security_calc_index.leverage_ratio) if isinstance(self.security_calc_index.leverage_ratio, Decimal) else self.security_calc_index.leverage_ratio,
+            'conversion_ratio': float(self.security_calc_index.conversion_ratio) if isinstance(self.security_calc_index.conversion_ratio, Decimal) else self.security_calc_index.conversion_ratio,
+            'balance_point': float(self.security_calc_index.balance_point) if isinstance(self.security_calc_index.balance_point, Decimal) else self.security_calc_index.balance_point,
+            'open_interest': float(self.security_calc_index.open_interest) if isinstance(self.security_calc_index.open_interest, Decimal) else self.security_calc_index.open_interest,
+            'delta': float(self.security_calc_index.delta) if isinstance(self.security_calc_index.delta, Decimal) else self.security_calc_index.delta,
+            'gamma': float(self.security_calc_index.gamma) if isinstance(self.security_calc_index.gamma, Decimal) else self.security_calc_index.gamma,
+            'theta': float(self.security_calc_index.theta) if isinstance(self.security_calc_index.theta, Decimal) else self.security_calc_index.theta,
+            'vega': float(self.security_calc_index.vega) if isinstance(self.security_calc_index.vega, Decimal) else self.security_calc_index.vega,
+            'rho': float(self.security_calc_index.rho) if isinstance(self.security_calc_index.rho, Decimal) else self.security_calc_index.rho,
+        }
+    
+class SubscriptionModel:
+    def __init__(self, subscription):
+        self.subscription = subscription
+    def to_dict(self):
+        return {
+            'symbol': self.subscription.symbol,
+            'sub_types': [str(types) for types in self.subscription.sub_types],
+            'candlesticks': [str(candlesticks) for candlesticks in self.subscription.candlesticks],
+        }

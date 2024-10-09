@@ -1,10 +1,12 @@
 import os
 import utils.config as config
+from utils.scheduler import Scheduler
 from flask import Flask
 from dotenv import load_dotenv
 from longport.openapi import Config
 from route.admin import admin_route
 from route.api import api_route
+from apscheduler.schedulers.background import BackgroundScheduler
 
 # 加载 .env 文件中的配置
 load_dotenv('.env')
@@ -30,6 +32,14 @@ config.long_bridge_config = Config(
 
 # 创建一个Flask应用程序实例
 app = Flask(__name__)
+
+def process_database_data():
+    scheduler = Scheduler(config.long_bridge_config)
+    scheduler.run()
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=process_database_data, trigger="interval", seconds=60)  # 定时任务60秒运行一次
+scheduler.start()
 
 # api路由注册
 app.register_blueprint(api_route, url_prefix='/api')

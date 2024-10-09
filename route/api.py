@@ -1,9 +1,11 @@
 from flask import Blueprint, request, jsonify
 from utils.trade import Trade
+from utils.quote import Quote
 import utils.config as config
 import utils.tools as tools
 from datetime import datetime, timedelta
 from decimal import Decimal
+import asyncio
 
 # 创建 API 的蓝图
 api_route = Blueprint('api', __name__)
@@ -118,3 +120,63 @@ def margin_ratio():
 @api_route.route('/stock_positions')
 def stock_positions():
     return tools.to_json(Trade(config.long_bridge_config).stock_positions())
+
+# 获取标的列表
+@api_route.route('/security_list')
+async def security_list():
+    security_list = await Quote(config.long_bridge_config).security_list()
+    return tools.to_json(security_list)
+
+# 获取标的基础信息(支持传多个标的)
+@api_route.route('/security_static_info/<symbol>')
+async def security_static_info(symbol):
+    return tools.to_json(await Quote(config.long_bridge_config).security_static_info(symbol))
+
+# 获取标的实时行情(支持传多个标的)
+@api_route.route('/security_quote_info/<symbol>')
+async def security_quote_info(symbol):
+    return tools.to_json(await Quote(config.long_bridge_config).security_quote_info(symbol))
+
+# 获取标的成交明细
+@api_route.route('/security_trades/<symbol>')
+async def security_trades(symbol):
+    limit = request.args.get('limit', 1000)
+    return tools.to_json(await Quote(config.long_bridge_config).security_trades(symbol, limit))
+
+# 获取标的历史K线数据
+@api_route.route('/security_history_candlesticks/<symbol>')
+async def security_history_candlesticks(symbol):
+    return tools.to_json(await Quote(config.long_bridge_config).security_history_candlesticks(symbol))
+
+    
+# 获取标的当日资金流向
+@api_route.route('/security_capital_flow/<symbol>')
+async def security_capital_flow(symbol):
+    return tools.to_json(await Quote(config.long_bridge_config).security_capital_flow(symbol))
+
+# 获取标的当日资金分布
+@api_route.route('/security_capital_distribution/<symbol>')
+async def security_capital_distribution(symbol):
+    return tools.to_json(await Quote(config.long_bridge_config).security_capital_distribution(symbol))
+
+# 获取标的计算指标
+@api_route.route('/security_calc_indexes/<symbol>')
+async def security_calc_indexes(symbol):
+    return tools.to_json(await Quote(config.long_bridge_config).security_calc_indexes(symbol))
+
+# 获取标的 K 线
+@api_route.route('/security_candlesticks/<symbol>')
+async def security_candlesticks(symbol):
+    limit = request.args.get('limit', 1000)
+    period = request.args.get('period', 'day')
+    return tools.to_json(await Quote(config.long_bridge_config).security_candlesticks(symbol, period, limit))
+
+# 订阅行情数据
+@api_route.route('/security_subscribe/<symbol>')
+async def security_subscribe(symbol):
+    # subscribe => 订阅行情数据  
+    # unsubscribe => 取消订阅行情数据  
+    # subscriptions => 获取已订阅标的行情
+    type = request.args.get('type', 'subscribe')
+    sub_type = request.args.get('sub_type', '')
+    return tools.to_json(await Quote(config.long_bridge_config).security_subscribe(symbol, type, sub_type))
